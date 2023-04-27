@@ -31,11 +31,11 @@ This modelling might be probably the most natural to come up to your mind when d
 There are some problems with this modelling, namely the lacking of ordering in the delivery of the packages
 
 ### Variables:
-	x_i_j --> Deliver step in which item j is delivered by courier i.
-	Basically we will have a matrix of n*m (n columns, m rows)
+- x_i_j --> Deliver step in which item j is delivered by courier i.
+	Basically we will have a matrix of m*n (m rows, n columns)
 
 ### Domains:
-	x_i_j in 1..n 
+- x_i_j in 1..n 
 	(Because the maximum possible number of steps we can have is n if one courier deliver all of the objects)
 
 ### Constraints:
@@ -45,19 +45,19 @@ There are some problems with this modelling, namely the lacking of ordering in t
 
 ***
 
-## Modelling 3: Step-oriented(?)
+## Modelling 3: Step-oriented
 
 ### Description:
 This model is really similar to the previous one, what makes it intuitive, and more important, easy to compute the objective function:
-dist = SUM_{i=1}^{m}(SUM_{j=1}^{n}(D[j][j+1])) --> Remember to add the distance from origin to the first point at the begining (I haven't thought about how to do it yet)
+$dist = \Sigma_{i=1}^{m}(\Sigma_{j=1}^{n}(D[j][j+1]))$ --> Remember to add the distance from origin to the first point at the begining (I haven't thought about how to do it yet)
 
 ### Variables:
-- x_i_t --> Item delivered by courier i at deliver step t.
-	Matrix of n*m (n columns, m rows). Each row is a vector of deliver steps, when the courier is finished the rest of the values of the vector are equal to 0 or -1
+- $x_{i,t}$ --> Item delivered by courier i at deliver step t.
+	Matrix of m*n (m rows, n columns). Each row is a vector of deliver steps, when the courier is finished the rest of the values of the vector are equal to 0 or -1
 	Another implementation could be using array of arrays (number of variables decided dynamically :-/)
 
 ### Domains:
-- x_i_t in 1..n --> Number of items basically
+- x_{i,t} in 1..n --> Number of items basically
 
 ### Constraints:
 - Each item must be assigned to only one courier.
