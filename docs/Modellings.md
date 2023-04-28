@@ -8,15 +8,13 @@ The problem of this model might be that it is not that intuitive and we do not k
 go back to the origin point.
 
 ### Variables:
-- Array ita[j] = i
-	Item assignments: Item j is assigned to courier i
+- $ita_j \rightarrow$ Item assignments: courier $i$ which object $j$ is assigned to
 
-- Array its[j] = t
-	Item sequence: Item j is delivered in the delivering step t
+- $its_j \rightarrow$ Item sequence: deliver step $t$ in which the item $j$ was delivered
 
 ### Domains:
-- ita in 1..m (m = number of couriers)
-- its in 1..n (n = number of items = number of distr. points)
+- $ita_j \in \[1, m\]$, where $m$ = number of couriers
+- $its_j \in \[1, n\]$, where $n$ = number of items = number of distr. points
 
 ### Constraints:
 - Each item must be assigned to only one courier (Forced by the model)
@@ -31,12 +29,10 @@ This modelling might be probably the most natural to come up to your mind when d
 There are some problems with this modelling, namely the lacking of ordering in the delivery of the packages
 
 ### Variables:
-- x_i_j --> Deliver step in which item j is delivered by courier i.
-	Basically we will have a matrix of m*n (m rows, n columns)
+- $x_{i,j} \rightarrow$ Deliver step in which item j is delivered by courier i. Basically we will have a matrix of $m*n$ ($m$ rows, $n$ columns).
 
 ### Domains:
-- x_i_j in 1..n 
-	(Because the maximum possible number of steps we can have is n if one courier deliver all of the objects)
+- $x_{i,j} \in \[1, n\]$. (Because the maximum possible number of steps we can have is n if one courier deliver all of the objects)
 
 ### Constraints:
 - Each item must be assigned to only one courier (Check there is only one non-zero value per column)
@@ -52,12 +48,12 @@ This model is really similar to the previous one, what makes it intuitive, and m
 $dist = \Sigma_{i=1}^{m}(\Sigma_{j=1}^{n}(D[j][j+1]))$ --> Remember to add the distance from origin to the first point at the begining (I haven't thought about how to do it yet)
 
 ### Variables:
-- $x_{i,t}$ --> Item delivered by courier i at deliver step t.
-	Matrix of m*n (m rows, n columns). Each row is a vector of deliver steps, when the courier is finished the rest of the values of the vector are equal to 0 or -1
+- $x_{i,t} \rightarrow$ Item delivered by courier i at deliver step t.
+	Matrix of $m*n$ ($m$ rows, $n$ columns). Each row is a vector of deliver steps, when the courier is finished the rest of the values of the vector are equal to 0 or -1
 	Another implementation could be using array of arrays (number of variables decided dynamically :-/)
 
 ### Domains:
-- x_{i,t} in 1..n --> Number of items basically
+- $x_{i,t} \in \[1, n\] \rightarrow$ Number of items basically
 
 ### Constraints:
 - Each item must be assigned to only one courier.
