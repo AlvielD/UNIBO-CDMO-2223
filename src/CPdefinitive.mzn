@@ -18,6 +18,7 @@ array[1..n+1, 1..n+1] of int: D; % Distance matrix
 % DECISION VARIABLES
 array[1..m, 1..n+1] of var 1..n+1: routes; % Routes for each courier
 
+
 % ---------------------------------------------------------------------------------------------------------------------
 % CONSTRAINTS
 
@@ -42,7 +43,7 @@ constraint
     routes[i, n+1] = n+1
 );
 
-% constyraint to force that the total size of items assigned to each courier cannot exceed their maximum load size
+% constraint to force that the total size of items assigned to each courier cannot exceed their maximum load size
 constraint
   forall(i in 1..m)(
     sum(j in 1..n where routes[i,j] != n+1)(s[routes[i,j]]) <= l[i]
@@ -56,6 +57,7 @@ constraint
     routes[i, 1] != n+1
   );
 */
+
 % Force all the numbers after the first n+1 to be also n+1
 constraint 
   forall(i in 1..m)(
@@ -64,19 +66,36 @@ constraint
     )
   );
 
-
+%
+constraint
+  forall(i in 1..m)(
+    min([t | t in 1..n+1 where routes[i,t]!= n+1]) = 1
+   );
+ 
+ %
 % ---------------------------------------------------------------------------------------------------------------------
 % OBJECTIVE FUNCTION
 
 
-%Appliction of the same objective function above to all couriers 
+%Application of the same objective function above to all couriers 
 array[1..m] of var opt int: dist_courier =[sum(j in 1..n)(D[ routes[i, j], routes[i, j+1]]) +(D[n+1, routes[i,1]])|i in 1..m];        
 
 % ---------------------------------------------------------------------------------------------------------------------
 
 % Solve
+% Search annotations
 
-solve :: int_search(routes, input_order, indomain_min)  minimize max(dist_courier);
+
+ann: search_ann1 = int_search(routes, input_order, indomain_min);
+ann: search_ann2 = int_search(routes, input_order, indomain_random);
+ann: search_ann3 = int_search(routes, first_fail, indomain_min);
+ann: search_ann4 = int_search(routes, first_fail, indomain_random);
+ann: search_ann5 = int_search(routes, dom_w_deg, indomain_min); 
+ann: search_ann6 = int_search(routes, dom_w_deg, indomain_random); 
+ 
+
+
+solve :: search_ann6  minimize max(dist_courier);
 
 
        
