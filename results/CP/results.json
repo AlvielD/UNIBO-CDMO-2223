@@ -1,0 +1,2 @@
+{"type": "solution", "output": {"default": "Objective function value: [12, 10, 12]\nRoutes value: [3, 6, 5, 8, 8, 8, 8, 8, 2, 4, 8, 8, 8, 8, 8, 8, 1, 7, 8, 8, 8, 8, 8, 8]\n", "raw": "Objective function value: [12, 10, 12]\nRoutes value: [3, 6, 5, 8, 8, 8, 8, 8, 2, 4, 8, 8, 8, 8, 8, 8, 1, 7, 8, 8, 8, 8, 8, 8]\n"}, "sections": ["default", "raw"], "time": 473}
+{"type": "status", "status": "OPTIMAL_SOLUTION", "time": 474}
