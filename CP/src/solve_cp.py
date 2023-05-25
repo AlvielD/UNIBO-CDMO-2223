@@ -11,7 +11,7 @@ def solve(model, solver, data, output_file):
         output_file (String): path to the file where to write the output results
     """
 
-    cmd = f'minizinc --solver {solver} {model} {data} --json-stream --output-time'  # Bash command
+    cmd = f'minizinc --solver {solver} {model} {data} --statistics --json-stream --output-time'  # Bash command
 
     # Open output file and run the bash command
     with open(output_file, 'w') as file:
