@@ -23,7 +23,7 @@ if __name__ == '__main__':
     # Define the options for our problem
     model_file = 'CP/src/CPdefinitive.mzn'
     solver = 'Gecode'
-    data_file = 'CP/data/instance_1.dzn'
+    data_file = 'CP/data/inst01.dzn'
     output_file = 'results/CP/results.json'
 
     solve(model_file, solver, data_file, output_file)   # Solve instance
