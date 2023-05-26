@@ -1,11 +1,6 @@
 import os
 
-
-
-def data_to_dzn():
-
-    in_file_path = 'C:/Users/david/UNI/Combinatorial/Progetto/CDMO-Project/data'     # Data folder on the repository
-    out_file_path = 'C:/Users\david/UNI/Combinatorial/Progetto/CDMO-Project/CP/data'       # Data folder on the CP folder
+def data_to_dzn(in_file_path, out_file_path):
 
     n_instances = len(os.listdir(in_file_path))
 
@@ -38,4 +33,8 @@ def data_to_dzn():
 
 
 if __name__ == '__main__':
-    data_to_dzn()
+    
+    in_file_path = './data'     # Data folder on the repository
+    out_file_path = './CP/data'       # Data folder on the CP folder
+
+    data_to_dzn(in_file_path, out_file_path)

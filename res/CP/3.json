@@ -1,0 +1,5 @@
+{"type": "statistics", "statistics": {"paths": 0, "flatBoolVars": 72, "flatIntVars": 103, "flatBoolConstraints": 57, "flatIntConstraints": 166, "evaluatedReifiedConstraints": 36, "evaluatedHalfReifiedConstraints": 72, "eliminatedImplications": 36, "method": "minimize", "flatTime": 0.181475}}
+{"type": "solution", "output": {"default": "Objective function value: 12\nRoutes value: [5, 4, 2, 8, 8, 8, 8, 8, 6, 3, 8, 8, 8, 8, 8, 8, 1, 7, 8, 8, 8, 8, 8, 8]\n", "raw": "Objective function value: 12\nRoutes value: [5, 4, 2, 8, 8, 8, 8, 8, 6, 3, 8, 8, 8, 8, 8, 8, 1, 7, 8, 8, 8, 8, 8, 8]\n"}, "sections": ["default", "raw"], "time": 217}
+{"type": "status", "status": "OPTIMAL_SOLUTION", "time": 217}
+{"type": "statistics", "statistics": {"initTime": 0.002, "solveTime": 0.011, "solutions": 1, "variables": 193, "propagators": 232, "propagations": 51634, "nodes": 511, "failures": 255, "restarts": 0, "peakDepth": 18}}
+{"type": "statistics", "statistics": {"nSolutions": 1}}
