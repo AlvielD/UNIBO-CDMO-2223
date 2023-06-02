@@ -1,27 +1,59 @@
-import subprocess
 import os
+import json
 
-def solve(model, solver, data, output_file):
-    """Generates a bash command to run the minizinc programm in base of an specified model, solver and data.
+from datetime import timedelta
+from minizinc import Instance, Model, Solver
+
+def solve(model_name, solver, data, output_file):
+    """Solve the minizinc model given a selected solver, data file (.dzn) and write results
+    to an output_file
 
     Args:
-        model (String): path to the file containing the model to be used for solving the problem
-        solver (String): solver to be used for solving the problem
-        data (String): path to the data file containing the instance to be solved
-        output_file (String): path to the file where to write the output results
+        model_name (str): name of the model to be use to solve the instance
+        solver (str): choosen solver to solve the instance
+        data (str): data file containing the instance of the problem
+        output_file (str): name of the file to write the solution
     """
 
-    cmd = f'minizinc --solver {solver} {model} {data} -t 300000 --statistics --json-stream --output-time'  # Bash command
+    model = Model(f"CP/src/{model_name}.mzn")   # Load model from the file
+    gecode = Solver.lookup(solver)              # Look for the configuration of gecode solver
+    
+    instance = Instance(gecode, model)          # Create instance of the problem
+    instance.add_file(data)                     # Add the data to the instance
 
-    # Open output file and run the bash command
+    # Solve instance (set a timeout of 300000 microseconds)
+    result = instance.solve(timeout=timedelta(300000))
+
+    # Set the optimal_sol parameter depending on the status of solution
+    optimal_sol = False
+    if str(result.status) == 'OPTIMAL_SOLUTION': optimal_sol = True 
+
+    # Format the solution (remove repeated values)
+    solution = result.solution.routes
+    formatted_solution = []
+    for c in solution:
+        formatted_solution.append([item for item in c if c.count(item) == 1])
+
+    # Create dictionary object (dump it to json)
+    data = {
+        f"{model_name}": 
+        {
+            "time": int(result.statistics.get('time').total_seconds()*1000),
+            "optimal": optimal_sol,
+            "obj": int(result.objective),
+            "sol": str(formatted_solution)
+        }
+    }
+
+    # Write the results
     with open(output_file, 'w') as file:
-        subprocess.run(args=cmd.split(), stdout=file)
+        json.dump(data, file, indent=4)
 
 if __name__ == '__main__':
 
     # Define the options for our problem
-    model_file = 'CP/src/CPdefinitive.mzn'
-    solver = 'Gecode'
+    model_name = 'CPdefinitive'
+    solver = 'gecode'
     data_folder = 'CP/data/'
     output_folder = 'res/CP/'
 
@@ -30,4 +62,4 @@ if __name__ == '__main__':
 
     for data_file, i in zip(data_files, range(1, n_files+1)):
         output_file = f'{output_folder}{i}.json'
-        solve(model_file, solver, f'{data_folder}{data_file}', output_file)   # Solve instance
+        solve(model_name, solver, f'{data_folder}{data_file}', output_file)   # Solve instance

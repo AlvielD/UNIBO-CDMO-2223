@@ -1,1 +1,2 @@
+minizinc[dzn]
 z3-solver
