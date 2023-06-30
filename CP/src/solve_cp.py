@@ -4,9 +4,11 @@ import json
 from datetime import timedelta
 from tqdm import tqdm
 from minizinc import Instance, Model, Solver
-import matplotlib.pyplot as plt
+from minizinc.dzn import parse_dzn
+from pathlib import Path
+#import matplotlib.pyplot as plt
 
-def solve(model_name, solver, data, output_file):
+def solve(model_name, solver_name, data_file):
     """Solve the minizinc model given a selected solver, data file (.dzn) and write results
     to an output_file
 
@@ -18,15 +20,16 @@ def solve(model_name, solver, data, output_file):
     """
 
     model = Model(f"CP/src/{model_name}.mzn")   # Load model from the file
-    gecode = Solver.lookup(solver)              # Look for the configuration of gecode solver
+    solver = Solver.lookup(solver_name)              # Look for the configuration of gecode solver
     
-    instance = Instance(gecode, model)          # Create instance of the problem
-    instance.add_file(data)                     # Add the data to the instance
+    instance = Instance(solver, model)          # Create instance of the problem
+    instance.add_file(data_file)                # Add the data to the instance
 
     # Solve instance (set a timeout of 300000 miliseconds)
     result = instance.solve(timeout=timedelta(minutes=5))
 
     # Default values established in case a solution is not found
+    solved = False          # Assume by default we do not solve the instance
     time_sol = 300000       # Time is set by default to maximum
     optimal_sol = False
     obj_sol = None
@@ -34,6 +37,7 @@ def solve(model_name, solver, data, output_file):
 
     # If the solution is found, change values
     if result.solution:
+        solved = True
         time_sol = int(result.statistics.get('time').total_seconds()*1000)
         if str(result.status) == 'OPTIMAL_SOLUTION': optimal_sol = True
         obj_sol = int(result.objective)
@@ -44,7 +48,7 @@ def solve(model_name, solver, data, output_file):
     # Create dictionary object (dump it to json)
     # TODO: Avoid the formatted solution to be display in mulitple lines
     data = {
-        f"{model_name}": 
+        f"{model_name}_{solver_name}": 
         {
             "time": time_sol,
             "optimal": optimal_sol,
@@ -53,9 +57,8 @@ def solve(model_name, solver, data, output_file):
         }
     }
 
-    # Write the results
-    with open(output_file, 'w') as file:
-        json.dump(data, file, indent=4)
+    # Return the json data
+    return data, solved
 
 def plot_results(results_folder):
 
@@ -93,16 +96,70 @@ def plot_results(results_folder):
 if __name__ == '__main__':
 
     # Define the options for our problem
-    model_name = 'CPdefinitive'
-    solver = 'gecode'
-    data_folder = 'CP/data/'
+    models_list = [
+        'MCP',
+        'MCPSymbreak',
+        'MCPSymbreakImp'
+    ]
+
+    solvers_list = [
+        'gecode',
+        'chuffed'
+    ]
+
+    solved_instances = {
+        'MCP_gecode':               {'solved' : True, 'p_size' : 1},
+        'MCPSymbreak_gecode':       {'solved' : True, 'p_size' : 1},
+        'MCPSymbreakImp_gecode':    {'solved' : True, 'p_size' : 1},
+        'MCP_chuffed':              {'solved' : True, 'p_size' : 1},
+        'MCPSymbreak_chuffed':      {'solved' : True, 'p_size' : 1},
+        'MCPSymbreakImp_chuffed':   {'solved' : True, 'p_size' : 1},
+    }
+
+    data_folder = 'CP/test_data/'
     output_folder = 'res/CP/'
 
     data_files = os.listdir(data_folder)
     n_files = len(data_files)
 
+    #TODO: Implement concurrent solving => Substitude the p_size approach
     for data_file, id, i in zip(data_files, range(1, n_files+1), tqdm(range(n_files))):
-        output_file = f'{output_folder}{id}.json'
-        solve(model_name, solver, f'{data_folder}{data_file}', output_file)   # Solve instance
+        solution = {}
 
-    plot_results('res/CP/')
+        # Calculate p_size for the actual instance
+        data_filePath = Path(f"{data_folder}{data_file}")                 # Get the Path object (makes possible to parse with dzn)
+
+        # Extract size of the problem (we define it as m*n)
+        data = parse_dzn(data_filePath)
+        m = list(data.values())[0]
+        n = list(data.values())[1]
+        p_size = m*n
+
+        for solver in solvers_list:
+            for model_name in models_list:
+
+                # Default value (in case we do not solve the instance we fill with this)
+                data = {
+                    f"{model_name}_{solver}": 
+                    {
+                        "time": 300000,
+                        "optimal": False,
+                        "obj": None,
+                        "sol": []
+                    }
+                }
+
+                # We solve the problem if the previous problem was solved or if it had less or equal problem size
+                if solved_instances[f'{model_name}_{solver}']['solved'] or solved_instances[f'{model_name}_{solver}']['p_size'] <= p_size:
+                    output_file = f'{output_folder}{id}.json'
+                    data, solved = solve(model_name, solver, f'{data_folder}{data_file}')   # Solve instance
+                    solution.update(data)
+                    
+                    solved_instances[f'{model_name}_{solver}'].update({'solved': solved, 'p_size': p_size})
+
+
+        # Write the results
+        with open(output_file, 'w') as file:
+            json.dump(solution, file, indent=4)
+
+    #plot_results('res/CP/')
