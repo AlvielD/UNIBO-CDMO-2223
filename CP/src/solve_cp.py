@@ -1,6 +1,6 @@
 import os
 import json
-
+import asyncio
 from datetime import timedelta
 from tqdm import tqdm
 from minizinc import Instance, Model, Solver
@@ -59,6 +59,76 @@ def solve(model_name, solver_name, data_file):
 
     # Return the json data
     return data, solved
+
+async def solve_instances(models, solvers, data_files):
+
+    tasks = set()
+    
+    for data_file in data_files:
+        for solver_name in solvers:
+            for model_name in models:
+
+                # Create an instance for each file-solver-model
+                model = Model(f"CP/src/{model_name}.mzn")   # Load model from the file
+                solver = Solver.lookup(solver_name)         # Look for the configuration of gecode solver
+                
+                instance = Instance(solver, model)          # Create instance of the problem
+                instance.add_file(f"CP/data/{data_file}")   # Add the data to the instance
+
+                # Create a task for the solving of each instance
+                task = asyncio.create_task(instance.solve_async(timeout=timedelta(minutes=5)))
+                task.solver = solver_name
+                task.model = model_name
+                task.instance = data_file
+                tasks.add(task)
+    
+    done, _ = await asyncio.wait(tasks, return_when="ALL_COMPLETED")
+    # task.result() to return the result of the task
+    # TODO: Function to gather results???
+    data = gather_results(done)
+    print(data)
+
+def gather_results(tasks):
+
+    # Init dictionary to store the results
+    data = {}
+
+    for task in tasks:
+        # Get the result for every task
+        result = task.result()
+
+        # DEFAULT VALUES (Only if a solution is not found)
+        time_sol = 300000       # Time is set by default to maximum
+        optimal_sol = False
+        obj_sol = None
+        solution = []
+
+        if result.solution:
+            # FOUND SOLUTION => Change values
+            time_sol = int(result.statistics.get('time').total_seconds()*1000)
+            if str(result.status) == 'OPTIMAL_SOLUTION': optimal_sol = True
+            obj_sol = int(result.objective)
+
+            # Remove the repeated values from the solution (the repeated value is n+1 indicating the courier coming back to origin)
+            for c in result.solution.routes: solution.append([item for item in c if c.count(item) == 1])
+
+        # Create dictionary object
+        # TODO: Avoid the formatted solution to be display in mulitple lines
+        json_dict = {
+            f"{task.model}_{task.solver}": 
+            {
+                "time": time_sol,
+                "optimal": optimal_sol,
+                "obj": obj_sol,
+                "sol": solution
+            }
+        }
+
+        data.update(json_dict)
+
+    return data
+
+
 
 def plot_results(results_folder):
 
@@ -122,6 +192,7 @@ if __name__ == '__main__':
     data_files = os.listdir(data_folder)
     n_files = len(data_files)
 
+    """
     #TODO: Implement concurrent solving => Substitude the p_size approach
     for data_file, id, i in zip(data_files, range(1, n_files+1), tqdm(range(n_files))):
         solution = {}
@@ -161,5 +232,8 @@ if __name__ == '__main__':
         # Write the results
         with open(output_file, 'w') as file:
             json.dump(solution, file, indent=4)
+    """
 
     #plot_results('res/CP/')
+
+    asyncio.run(solve_instances(models_list, solvers_list, data_files))
