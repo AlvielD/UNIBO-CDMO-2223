@@ -67,9 +67,9 @@ constraint
 
 
 % Constraint to encourage early assignment of items to couriers with available load
-constraint forall(i in 1..m, j in 1..n) (
-  routes[i, j] == n+1 -> routes[i, j+1] = n+1 \/ sum(k in 1..n where k < j)(routes[i, k] = n+1) > 0
-);
+%constraint forall(i in 1..m, j in 1..n) (
+%  routes[i, j] == n+1 -> routes[i, j+1] = n+1 \/ sum(k in 1..n where k < j)(routes[i, k] = n+1) > 0
+%);
 
 
 % ---------------------------------------------------------------------------------------------------------------------
