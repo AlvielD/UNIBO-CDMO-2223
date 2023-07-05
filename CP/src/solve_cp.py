@@ -60,7 +60,7 @@ def solve(model_name, solver_name, data_file):
     # Return the json data
     return data, solved
 
-async def solve_instances(models, solvers, data_files):
+async def solve_instances(models, solvers, data_files, output_folder):
 
     tasks = set()
     
@@ -83,12 +83,34 @@ async def solve_instances(models, solvers, data_files):
                 tasks.add(task)
     
     done, _ = await asyncio.wait(tasks, return_when="ALL_COMPLETED")
-    # task.result() to return the result of the task
-    # TODO: Function to gather results???
     data = gather_results(done)
-    print(data)
+
+    dict_order = [f"{model_name}_{solver_name}" for solver_name in solvers_list for model_name in models_list]
+
+    # TODO: Dump jsons in order of instances (access the dictionary with the data_file name as key)
+    for i in range(len(data_files)):
+
+        output_file = f"{output_folder}{i+1}.json"
+        solution = data.get(data_files[i])
+
+        solution = sort_dict(solution, dict_order)
+
+        # Write the results
+        with open(output_file, 'w') as file:
+            json.dump(solution, file, indent=4)
+    
+    return data
+
 
 def gather_results(tasks):
+    """Create a dictionary with the results of the unsynchronised solved tasks
+
+    Args:
+        tasks (set): set containing asyncio.Task objects with the results of the unsynchronised competition
+
+    Returns:
+        dict: dictionary containing the results of the computation
+    """
 
     # Init dictionary to store the results
     data = {}
@@ -124,10 +146,37 @@ def gather_results(tasks):
             }
         }
 
-        data.update(json_dict)
+        update_dict(data, f"{task.instance}", json_dict)
 
     return data
 
+
+def update_dict(dict, key, value):
+    """Update a dictionary of dictionaries. If the key exists, the value is used to update the inside dict.
+
+    Args:
+        dict (dict): dictionary to be updated
+        key (string): key of the value we want to update
+        value (dict): the dictionary that we want to insert
+    """
+
+    if key in dict:
+        dict[key].update(value)
+    else:
+        dict[key] = value
+
+
+def sort_dict(dict, dict_order):
+    """Sorts a dictionary following an specified order of keys
+
+    Args:
+        dict (dict): dictionary we want to sort
+        dict_order (list): list of ordered keys to follow
+
+    Returns:
+        dict: the sorted dictionary
+    """
+    return {key: dict[key] for key in dict_order}
 
 
 def plot_results(results_folder):
@@ -236,4 +285,4 @@ if __name__ == '__main__':
 
     #plot_results('res/CP/')
 
-    asyncio.run(solve_instances(models_list, solvers_list, data_files))
+    asyncio.run(solve_instances(models_list, solvers_list, data_files, output_folder))

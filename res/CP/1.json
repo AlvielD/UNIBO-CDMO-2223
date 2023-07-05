@@ -1,103 +1,199 @@
 {
     "MCP_gecode": {
-        "time": 779,
-        "optimal": true,
-        "obj": 14,
+        "time": 267520,
+        "optimal": false,
+        "obj": 186,
         "sol": [
             [
                 1,
+                2
+            ],
+            [
                 3,
+                5
+            ],
+            [
                 4
             ],
             [
-                2,
-                5,
                 6
+            ],
+            [
+                7
+            ],
+            [
+                8
+            ],
+            [
+                9
+            ],
+            [
+                10
             ]
         ]
     },
     "MCPSymbreak_gecode": {
-        "time": 512,
-        "optimal": true,
-        "obj": 14,
+        "time": 723,
+        "optimal": false,
+        "obj": 186,
         "sol": [
             [
                 1,
+                2
+            ],
+            [
                 3,
+                5
+            ],
+            [
                 4
             ],
             [
-                2,
-                5,
                 6
+            ],
+            [
+                7
+            ],
+            [
+                8
+            ],
+            [
+                9
+            ],
+            [
+                10
             ]
         ]
     },
     "MCPSymbreakImp_gecode": {
-        "time": 537,
-        "optimal": true,
-        "obj": 14,
+        "time": 613,
+        "optimal": false,
+        "obj": 186,
         "sol": [
             [
                 1,
+                2
+            ],
+            [
                 3,
+                5
+            ],
+            [
                 4
             ],
             [
-                2,
-                5,
                 6
+            ],
+            [
+                7
+            ],
+            [
+                8
+            ],
+            [
+                9
+            ],
+            [
+                10
             ]
         ]
     },
     "MCP_chuffed": {
-        "time": 26,
+        "time": 30767,
         "optimal": true,
-        "obj": 14,
+        "obj": 186,
         "sol": [
             [
                 1,
+                2
+            ],
+            [
                 3,
+                5
+            ],
+            [
                 4
             ],
             [
-                2,
-                5,
                 6
+            ],
+            [
+                7
+            ],
+            [
+                8
+            ],
+            [
+                9
+            ],
+            [
+                10
             ]
         ]
     },
     "MCPSymbreak_chuffed": {
-        "time": 40,
+        "time": 41594,
         "optimal": true,
-        "obj": 14,
+        "obj": 186,
         "sol": [
             [
                 1,
+                2
+            ],
+            [
                 3,
+                5
+            ],
+            [
                 4
             ],
             [
-                2,
-                5,
                 6
+            ],
+            [
+                7
+            ],
+            [
+                8
+            ],
+            [
+                9
+            ],
+            [
+                10
             ]
         ]
     },
     "MCPSymbreakImp_chuffed": {
-        "time": 27,
+        "time": 5415,
         "optimal": true,
-        "obj": 14,
+        "obj": 186,
         "sol": [
             [
                 1,
+                2
+            ],
+            [
                 3,
+                5
+            ],
+            [
                 4
             ],
             [
-                2,
-                5,
                 6
+            ],
+            [
+                7
+            ],
+            [
+                8
+            ],
+            [
+                9
+            ],
+            [
+                10
             ]
         ]
     }
