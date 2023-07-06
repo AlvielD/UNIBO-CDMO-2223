@@ -28,7 +28,7 @@ constraint alldifferent_except(routes,{n+1});
 
 % THE COURIER MUST FINISH IN THE ORIGIN POINT. (Test removing this constraint)
 % Force the value n+1 to appear at least once.
-% TODO: Why there is j going from n-m+2 until n+1? (If its an improvement to the original model it should go on another file)
+% Optimization: In the worst case scenario a courier will deliver n-m+1 items, each courier will have a n+1 in the positions n-m+2..n+1 because we forced each courier to deliver at least one item. 
 constraint forall(i in 1..m, j in n-m+2..n+1) (
   routes[i, j] = n + 1
 );
@@ -39,9 +39,6 @@ constraint
   forall(i in 1..n)(
     count(routes,i,1)
 );
-
-% EACH COURIER NEEDS TO FINISH AT ORIGIN POINT
-%TODO: Here we miss the constraint to force the last element to be an n+1, I guess it was removed because of the following constraint.
 
 % TODO: This also seems like an improvement, it should go in another file. Seems like a replacement for the not implemented constraint above
 % Force to have exactly (m*(n+1))-n n+1s (Implied constraint?)
