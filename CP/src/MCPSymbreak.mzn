@@ -74,7 +74,7 @@ constraint
     routes[i, 1] != n+1
   );
 
-<<<<<<< HEAD:CP/src/CPdefinitive.mzn
+<<<<<< HEAD:CP/src/CPdefinitive.mzn
 
 % Force all the numbers after the first n+1 to be also n+1
 constraint 
