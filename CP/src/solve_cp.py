@@ -1,11 +1,12 @@
 import os
 import json
 import asyncio
-from datetime import timedelta
+import datetime
 from tqdm import tqdm
 from minizinc import Instance, Model, Solver
 from minizinc.dzn import parse_dzn
 from pathlib import Path
+import math
 #import matplotlib.pyplot as plt
 
 def solve(model_name, solver_name, data_file):
@@ -26,10 +27,10 @@ def solve(model_name, solver_name, data_file):
     instance.add_file(data_file)                # Add the data to the instance
 
     # Solve instance (set a timeout of 300000 miliseconds)
-    result = instance.solve(timeout=timedelta(minutes=5))
+    timeout = datetime.timedelta(milliseconds=300000)
+    result = instance.solve(timeout=timeout)
 
     # Default values established in case a solution is not found
-    solved = False          # Assume by default we do not solve the instance
     time_sol = 300000       # Time is set by default to maximum
     optimal_sol = False
     obj_sol = None
@@ -37,9 +38,8 @@ def solve(model_name, solver_name, data_file):
 
     # If the solution is found, change values
     if result.solution:
-        solved = True
-        time_sol = int(result.statistics.get('time').total_seconds()*1000)
-        if str(result.status) == 'OPTIMAL_SOLUTION': optimal_sol = True
+        time_sol = math.floor(int(result.statistics.get('time').total_seconds()))
+        if time_sol < 300: optimal_sol = True
         obj_sol = int(result.objective)
 
         # Remove the repeated values from the solution (the repeated value is n+1 indicating the courier coming back to origin)
@@ -58,7 +58,7 @@ def solve(model_name, solver_name, data_file):
     }
 
     # Return the json data
-    return data, solved
+    return data
 
 async def solve_instances(models, solvers, data_files, output_folder):
 
@@ -87,11 +87,10 @@ async def solve_instances(models, solvers, data_files, output_folder):
 
     dict_order = [f"{model_name}_{solver_name}" for solver_name in solvers_list for model_name in models_list]
 
-    # TODO: Dump jsons in order of instances (access the dictionary with the data_file name as key)
-    for i in range(len(data_files)):
+    for data_file in data_files:
 
-        output_file = f"{output_folder}{i+1}.json"
-        solution = data.get(data_files[i])
+        output_file = f"{output_folder}{data_file[4:6]}.json"
+        solution = data.get(data_file)
 
         solution = sort_dict(solution, dict_order)
 
@@ -120,22 +119,22 @@ def gather_results(tasks):
         result = task.result()
 
         # DEFAULT VALUES (Only if a solution is not found)
-        time_sol = 300000       # Time is set by default to maximum
+        time_sol = 300       # Time is set by default to maximum
         optimal_sol = False
         obj_sol = None
         solution = []
 
         if result.solution:
             # FOUND SOLUTION => Change values
-            time_sol = int(result.statistics.get('time').total_seconds()*1000)
-            if str(result.status) == 'OPTIMAL_SOLUTION': optimal_sol = True
+            print(result.statistics)
+            time_sol = math.floor(int(result.statistics.get('time').total_seconds()))
+            if time_sol < 300: optimal_sol = True
             obj_sol = int(result.objective)
 
             # Remove the repeated values from the solution (the repeated value is n+1 indicating the courier coming back to origin)
             for c in result.solution.routes: solution.append([item for item in c if c.count(item) == 1])
 
         # Create dictionary object
-        # TODO: Avoid the formatted solution to be display in mulitple lines
         json_dict = {
             f"{task.model}_{task.solver}": 
             {
@@ -285,4 +284,6 @@ if __name__ == '__main__':
 
     #plot_results('res/CP/')
 
-    asyncio.run(solve_instances(models_list, solvers_list, data_files, output_folder))
+    #asyncio.run(solve_instances(models_list, solvers_list, data_files, output_folder))
+    result = solve(models_list[2], solvers_list[1], "CP/data/inst11.dzn")
+    print(result)

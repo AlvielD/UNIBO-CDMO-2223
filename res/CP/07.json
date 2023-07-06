@@ -1,7 +1,7 @@
 {
     "MCP_gecode": {
-        "time": 18557,
-        "optimal": false,
+        "time": 89,
+        "optimal": true,
         "obj": 167,
         "sol": [
             [
@@ -36,8 +36,8 @@
         ]
     },
     "MCPSymbreak_gecode": {
-        "time": 10590,
-        "optimal": false,
+        "time": 68,
+        "optimal": true,
         "obj": 167,
         "sol": [
             [
@@ -72,8 +72,8 @@
         ]
     },
     "MCPSymbreakImp_gecode": {
-        "time": 7600,
-        "optimal": false,
+        "time": 65,
+        "optimal": true,
         "obj": 167,
         "sol": [
             [
@@ -108,8 +108,8 @@
         ]
     },
     "MCP_chuffed": {
-        "time": 609262,
-        "optimal": false,
+        "time": 298,
+        "optimal": true,
         "obj": 167,
         "sol": [
             [
@@ -144,8 +144,8 @@
         ]
     },
     "MCPSymbreak_chuffed": {
-        "time": 607239,
-        "optimal": false,
+        "time": 298,
+        "optimal": true,
         "obj": 167,
         "sol": [
             [
@@ -180,8 +180,8 @@
         ]
     },
     "MCPSymbreakImp_chuffed": {
-        "time": 605234,
-        "optimal": false,
+        "time": 56,
+        "optimal": true,
         "obj": 167,
         "sol": [
             [

@@ -1,22 +1,20 @@
 {
     "MCP_gecode": {
-        "time": 300000,
+        "time": 300,
         "optimal": false,
         "obj": null,
         "sol": []
     },
     "MCPSymbreak_gecode": {
-        "time": 787,
-        "optimal": false,
-        "obj": 220,
+        "time": 3,
+        "optimal": true,
+        "obj": 436,
         "sol": [
             [
                 1,
                 2,
+                3,
                 4
-            ],
-            [
-                3
             ],
             [
                 5
@@ -35,21 +33,28 @@
             ],
             [
                 10
+            ],
+            [
+                11
+            ],
+            [
+                12
+            ],
+            [
+                13
             ]
         ]
     },
     "MCPSymbreakImp_gecode": {
-        "time": 700,
-        "optimal": false,
-        "obj": 220,
+        "time": 2,
+        "optimal": true,
+        "obj": 436,
         "sol": [
             [
                 1,
                 2,
+                3,
                 4
-            ],
-            [
-                3
             ],
             [
                 5
@@ -68,21 +73,28 @@
             ],
             [
                 10
+            ],
+            [
+                11
+            ],
+            [
+                12
+            ],
+            [
+                13
             ]
         ]
     },
     "MCP_chuffed": {
-        "time": 93881,
+        "time": 296,
         "optimal": true,
-        "obj": 220,
+        "obj": 436,
         "sol": [
             [
                 1,
                 2,
+                3,
                 4
-            ],
-            [
-                3
             ],
             [
                 5
@@ -101,21 +113,28 @@
             ],
             [
                 10
+            ],
+            [
+                11
+            ],
+            [
+                12
+            ],
+            [
+                13
             ]
         ]
     },
     "MCPSymbreak_chuffed": {
-        "time": 96044,
+        "time": 297,
         "optimal": true,
-        "obj": 220,
+        "obj": 436,
         "sol": [
             [
                 1,
                 2,
+                3,
                 4
-            ],
-            [
-                3
             ],
             [
                 5
@@ -134,21 +153,28 @@
             ],
             [
                 10
+            ],
+            [
+                11
+            ],
+            [
+                12
+            ],
+            [
+                13
             ]
         ]
     },
     "MCPSymbreakImp_chuffed": {
-        "time": 11496,
+        "time": 297,
         "optimal": true,
-        "obj": 220,
+        "obj": 436,
         "sol": [
             [
                 1,
                 2,
+                3,
                 4
-            ],
-            [
-                3
             ],
             [
                 5
@@ -167,6 +193,15 @@
             ],
             [
                 10
+            ],
+            [
+                11
+            ],
+            [
+                12
+            ],
+            [
+                13
             ]
         ]
     }
