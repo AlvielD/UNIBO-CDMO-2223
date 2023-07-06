@@ -74,7 +74,10 @@ constraint
     routes[i, 1] != n+1
   );
 
+<<<<<<< HEAD
 <<<<<< HEAD:CP/src/CPdefinitive.mzn
+=======
+>>>>>>> 6a10fd4304e94f8528cdb6627e0213c9a718965f
 
 % Force all the numbers after the first n+1 to be also n+1
 constraint 
@@ -89,8 +92,6 @@ constraint
 %);
 
 
-=======
->>>>>>> d62ae40fe12e03189eb2665e2d51ef459f280d3e:CP/src/MCPSymbreak.mzn
 % ---------------------------------------------------------------------------------------------------------------------
 % OBJECTIVE FUNCTION
 

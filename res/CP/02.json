@@ -1,199 +1,169 @@
 {
     "MCP_gecode": {
-        "time": 156011,
-        "optimal": false,
-        "obj": 220,
+        "time": 88,
+        "optimal": true,
+        "obj": 226,
         "sol": [
             [
                 1,
-                2,
                 4
             ],
             [
+                2,
                 3
             ],
             [
-                5
+                5,
+                7
             ],
             [
                 6
-            ],
-            [
-                7
             ],
             [
                 8
             ],
             [
                 9
-            ],
-            [
-                10
             ]
         ]
     },
     "MCPSymbreak_gecode": {
-        "time": 716,
-        "optimal": false,
-        "obj": 220,
+        "time": 88,
+        "optimal": true,
+        "obj": 226,
         "sol": [
             [
                 1,
-                2,
                 4
             ],
             [
+                2,
                 3
             ],
             [
-                5
+                5,
+                7
             ],
             [
                 6
-            ],
-            [
-                7
             ],
             [
                 8
             ],
             [
                 9
-            ],
-            [
-                10
             ]
         ]
     },
     "MCPSymbreakImp_gecode": {
-        "time": 487,
-        "optimal": false,
-        "obj": 220,
+        "time": 87,
+        "optimal": true,
+        "obj": 226,
         "sol": [
             [
                 1,
-                2,
                 4
             ],
             [
+                2,
                 3
             ],
             [
-                5
+                5,
+                7
             ],
             [
                 6
-            ],
-            [
-                7
             ],
             [
                 8
             ],
             [
                 9
-            ],
-            [
-                10
             ]
         ]
     },
     "MCP_chuffed": {
-        "time": 35064,
+        "time": 8,
         "optimal": true,
-        "obj": 220,
+        "obj": 226,
         "sol": [
             [
                 1,
-                2,
                 4
             ],
             [
+                2,
                 3
             ],
             [
-                5
+                5,
+                7
             ],
             [
                 6
-            ],
-            [
-                7
             ],
             [
                 8
             ],
             [
                 9
-            ],
-            [
-                10
             ]
         ]
     },
     "MCPSymbreak_chuffed": {
-        "time": 37262,
+        "time": 8,
         "optimal": true,
-        "obj": 220,
+        "obj": 226,
         "sol": [
             [
                 1,
-                2,
                 4
             ],
             [
+                2,
                 3
             ],
             [
-                5
+                5,
+                7
             ],
             [
                 6
-            ],
-            [
-                7
             ],
             [
                 8
             ],
             [
                 9
-            ],
-            [
-                10
             ]
         ]
     },
     "MCPSymbreakImp_chuffed": {
-        "time": 8422,
+        "time": 4,
         "optimal": true,
-        "obj": 220,
+        "obj": 226,
         "sol": [
             [
                 1,
-                2,
                 4
             ],
             [
+                2,
                 3
             ],
             [
-                5
+                5,
+                7
             ],
             [
                 6
-            ],
-            [
-                7
             ],
             [
                 8
             ],
             [
                 9
-            ],
-            [
-                10
             ]
         ]
     }

@@ -1,13 +1,13 @@
 {
     "MCP_gecode": {
-        "time": 300000,
+        "time": 300,
         "optimal": false,
         "obj": null,
         "sol": []
     },
     "MCPSymbreak_gecode": {
-        "time": 366,
-        "optimal": false,
+        "time": 4,
+        "optimal": true,
         "obj": 244,
         "sol": [
             [
@@ -46,8 +46,8 @@
         ]
     },
     "MCPSymbreakImp_gecode": {
-        "time": 273,
-        "optimal": false,
+        "time": 3,
+        "optimal": true,
         "obj": 244,
         "sol": [
             [
@@ -86,8 +86,8 @@
         ]
     },
     "MCP_chuffed": {
-        "time": 299846,
-        "optimal": false,
+        "time": 296,
+        "optimal": true,
         "obj": 244,
         "sol": [
             [
@@ -126,8 +126,8 @@
         ]
     },
     "MCPSymbreak_chuffed": {
-        "time": 299840,
-        "optimal": false,
+        "time": 296,
+        "optimal": true,
         "obj": 244,
         "sol": [
             [
@@ -166,8 +166,8 @@
         ]
     },
     "MCPSymbreakImp_chuffed": {
-        "time": 299774,
-        "optimal": false,
+        "time": 295,
+        "optimal": true,
         "obj": 244,
         "sol": [
             [
