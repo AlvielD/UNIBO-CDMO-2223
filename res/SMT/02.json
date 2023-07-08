@@ -1,0 +1,42 @@
+{
+    "MCP": {
+        "time": 254,
+        "optimal": true,
+        "obj": null,
+        "sol": []
+    },
+    "MCPSymbreak": {
+        "time": 300,
+        "optimal": false,
+        "obj": null,
+        "sol": []
+    },
+    "MCPSymbreakImp": {
+        "time": 4,
+        "optimal": true,
+        "obj": 226,
+        "sol": [
+            [
+                7,
+                3
+            ],
+            [
+                8
+            ],
+            [
+                6
+            ],
+            [
+                5,
+                9
+            ],
+            [
+                4,
+                1
+            ],
+            [
+                2
+            ]
+        ]
+    }
+}

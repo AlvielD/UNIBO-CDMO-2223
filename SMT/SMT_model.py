@@ -52,8 +52,8 @@ if __name__ == "__main__":
     for data_file in data_files:
 
         # READ PARAMETERS
-        file_path = "data/inst02.dat"
-        parameters = parse_file(file_path)
+        #file_path = "data/inst02.dat"
+        parameters = parse_file(f"data/{data_file}")
         m, n, _, _, _ = parameters
 
         data = {}

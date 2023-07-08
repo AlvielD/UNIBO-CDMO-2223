@@ -26,24 +26,21 @@ array[1..m, 1..n+1] of var 1..n+1: routes; % Routes for each courier
 % Vale of all the variables must be different (except the value representing the origin point.
 constraint alldifferent_except(routes,{n+1});
 
-% THE COURIER MUST FINISH IN THE ORIGIN POINT. (Test removing this constraint)
-% Force the value n+1 to appear at least once.
-% Optimization: In the worst case scenario a courier will deliver n-m+1 items, each courier will have a n+1 in the positions n-m+2..n+1 because we forced each courier to deliver at least one item. 
-constraint forall(i in 1..m, j in n-m+2..n+1) (
-  routes[i, j] = n + 1
-);
-
-% ALL ITEMS NEED TO BE DELIVERED
+% ALL ITEMS Must BE DELIVERED
 % Force values from 1 to n to appear exactly once
 constraint 
   forall(i in 1..n)(
     count(routes,i,1)
 );
-
-% TODO: This also seems like an improvement, it should go in another file. Seems like a replacement for the not implemented constraint above
-% Force to have exactly (m*(n+1))-n n+1s (Implied constraint?)
+% Force to have exactly (m*(n+1))-n n+1s (Implied constraint)
 constraint 
     count(routes,n+1,(m*(n+1))-n);
+
+% THE COURIER MUST FINISH IN THE ORIGIN POINT. (Test removing this constraint)
+% Force the value n+1 to appear at least once in the last position. In the worst case scenario a courier will deliver n-m+1 items,he will have a n+1 in the positions n-m+2..n+1 because we forced them to deliver at least one item. 
+constraint forall(i in 1..m, j in n-m+2..n+1) (
+  routes[i, j] = n + 1
+);
     
 % ONCE RETURNED TO ORIGIN, A COURIER CANNOT DELIVER MORE
 % Force all the numbers after the first n+1 to be also n+1
@@ -57,10 +54,9 @@ constraint
 % Also force the total size of items assigned to each courier to be at least the load of the min value of item sizes. (Implied constraint?)
 constraint
   forall(i in 1..m)(
-    sum(j in 1..n where routes[i,j] != n+1)(s[routes[i,j]]) <= l[i] /\ sum(j in 1..n where routes[i,j] != n+1)(s[routes[i,j]]) >= min(s) 
-);
+    sum(j in 1..n where routes[i,j] != n+1)(s[routes[i,j]]) <= l[i]);
 
-% POSSIBLE SIMMETRY BREAKING
+% SIMMETRY BREAKING
 % Constraint to force the first value of each row of the matrix to be different from n+1
 constraint 
   forall(i in 1..m)(
@@ -93,5 +89,5 @@ solve :: search_ann6  minimize max(dist_courier);
 
 
        
-output ["Objective function value: \(max(dist_courier))\n"];
+output ["Objective function value: \(dist_courier)\n"];
 output ["Routes value: \(routes)\n"];

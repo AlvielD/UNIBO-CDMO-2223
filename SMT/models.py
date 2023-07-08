@@ -105,7 +105,7 @@ def build_model(parameters, model_name=None):
         for j in range(n):
             solver.add(If(routes[i][j] == n+1, routes[i][j+1] == n+1, True))
         
-        if model_name == "MCPSymbreak":
+        if model_name in ["MCPSymbreak","MCPSymbreakImp"]:
             # SYMMETRY BREAKING
             #Constraint to force the first value of each row of the matrix to be different from n+1
             solver.add(routes[i][0] != n+1)

@@ -29,10 +29,9 @@ constraint alldifferent_except(routes,{n+1});
 
 % THE COURIER MUST FINISH IN THE ORIGIN POINT. (Test removing this constraint)
 % Force the value n+1 to appear at least once.
-constraint 
-  forall(i in 1..m)(
-    count_leq([routes[i,j]|j in 1..n+1], n+1, 1)
-   );
+constraint forall(i in 1..m, j in n-m+2..n+1) (
+  routes[i, j] = n + 1
+);
 
 
 % ALL ITEMS NEED TO BE DELIVERED
@@ -41,15 +40,6 @@ constraint
   forall(i in 1..n)(
     count(routes,i,1)
 );
-
-
-% EACH COURIER NEEDS TO FINISH AT ORIGIN POINT
-% Force the last element to be an n+1.
-constraint 
-  forall(i in 1..m)(
-    routes[i, n+1] = n+1
-  );
-  
     
 % ONCE RETURNED TO ORIGIN, A COURIER CANNOT DELIVER MORE
 % Force all the numbers after the first n+1 to be also n+1
@@ -63,7 +53,7 @@ constraint
 % Also force the total size of items assigned to each courier to be at least the load of the min value of item sizes. (Implied constraint?)
 constraint
   forall(i in 1..m)(
-    sum(j in 1..n where routes[i,j] != n+1)(s[routes[i,j]]) <= l[i] /\ sum(j in 1..n where routes[i,j] != n+1)(s[routes[i,j]]) >= min(s) 
+    sum(j in 1..n where routes[i,j] != n+1)(s[routes[i,j]]) <= l[i]  
 );
 
 
@@ -73,18 +63,6 @@ constraint
   forall(i in 1..m)(
     routes[i, 1] != n+1
   );
-
-<<<<<<< HEAD
-<<<<<< HEAD:CP/src/CPdefinitive.mzn
-=======
->>>>>>> 6a10fd4304e94f8528cdb6627e0213c9a718965f
-
-% Force all the numbers after the first n+1 to be also n+1
-constraint 
-  forall(i in 1..m, j in 1..n)(
-      if routes[i,j]==n+1 then routes[i,j+1] = n+1 else true endif
-  );
-
 
 % Constraint to encourage early assignment of items to couriers with available load
 %constraint forall(i in 1..m, j in 1..n) (
@@ -114,7 +92,7 @@ ann: search_ann6 = int_search(routes, dom_w_deg, indomain_random);
  
 
 
-solve :: search_ann1  minimize max(dist_courier);
+solve :: search_ann6  minimize max(dist_courier);
 
 
        
