@@ -135,17 +135,21 @@ def solve_model(model, routes, parameters):
     obj_sol = None
     solution = []
 
-    # Creat instance of the solver
-    solver = pulp.PULP_CBC_CMD(mip=True, msg=False, timeLimit=300)
+    # Create instance of the solver
+    solver = pulp.PULP_CBC_CMD(mip=True, msg=True, timeLimit=300)
 
     # Solve the model (and time it)
+    print("Solving model...")
     s_time = time()
     model.solve(solver)
     e_time = time()
     time_sol = math.floor(e_time-s_time)
 
-    if model.status == LpStatusOptimal:
-        length = model.objective.value()
+    status = model.status
+    print(status)
+
+    if status == LpStatusOptimal:
+        obj_sol = model.objective.value()
 
     # GATHER RESULTS
     routes_values = []
@@ -153,14 +157,18 @@ def solve_model(model, routes, parameters):
         r = []
         index = n
         while True: 
-            index = [routes[d][index][j].varValue for j in range(n+1)].index(1.0)
+            try:
+                index = [routes[d][index][j].varValue for j in range(n+1)].index(1.0)
+            except ValueError:
+                # There is no 1, therefore the courier does not deliver any package (can happen for base model without IC)
+                break   # Break loop and continue with next courier
+
             if index+1 != n+1: r.append(index+1)
             if(index == n):
                 routes_values.append(r)
                 break
     
     solution = routes_values
-    obj_sol = length
     if time_sol < 300: optimal_sol = True
 
     results = {

@@ -23,45 +23,51 @@ array[1..m, 1..n+1] of var 1..n+1: routes; % Routes for each courier
 % CONSTRAINTS
 
 % TWO COURIERS CANNOT GO TO THE SAME DISTRIBUTION POINT
-% Vale of all the variables must be different (except the value representing the origin point.
-constraint alldifferent_except(routes,{n+1});
+% Value of all the variables must be different (except n+1 representing the origin point)
+constraint 
+  alldifferent_except(routes,{n+1});
 
-% ALL ITEMS Must BE DELIVERED
+
+% ALL ITEMS MUST BE DELIVERED
 % Force values from 1 to n to appear exactly once
 constraint 
   forall(i in 1..n)(
-    count(routes,i,1)
-);
-% Force to have exactly (m*(n+1))-n n+1s (Implied constraint)
-constraint 
-    count(routes,n+1,(m*(n+1))-n);
+    count(routes,i,1));
 
-% THE COURIER MUST FINISH IN THE ORIGIN POINT. (Test removing this constraint)
+
+% THE COURIER MUST FINISH IN THE ORIGIN POINT. 
 % Force the value n+1 to appear at least once in the last position. In the worst case scenario a courier will deliver n-m+1 items,he will have a n+1 in the positions n-m+2..n+1 because we forced them to deliver at least one item. 
-constraint forall(i in 1..m, j in n-m+2..n+1) (
-  routes[i, j] = n + 1
-);
-    
+constraint 
+  forall(i in 1..m, j in n-m+2..n+1)(
+    routes[i, j] = n + 1);
+
+  
 % ONCE RETURNED TO ORIGIN, A COURIER CANNOT DELIVER MORE
 % Force all the numbers after the first n+1 to be also n+1
 constraint 
   forall(i in 1..m, j in 1..n)(
-      if routes[i,j]==n+1 then routes[i,j+1] = n+1 else true endif
-  );
+    if routes[i,j]==n+1 then routes[i,j+1] = n+1 
+      else true endif);
 
-% NO COURIER CAN OVERLOAD ITSELF & EACH COURIER MUST DELIVER AT LEAST ONE ITEM
+
+% AVOID COURIER OVERLOAD
 % Force that the total size of items assigned to each courier cannot exceed their maximum load size.
-% Also force the total size of items assigned to each courier to be at least the load of the min value of item sizes. (Implied constraint?)
 constraint
   forall(i in 1..m)(
     sum(j in 1..n where routes[i,j] != n+1)(s[routes[i,j]]) <= l[i]);
+
 
 % SIMMETRY BREAKING
 % Constraint to force the first value of each row of the matrix to be different from n+1
 constraint 
   forall(i in 1..m)(
-    routes[i, 1] != n+1
-  );
+    routes[i, 1] != n+1);
+
+
+% IMPLIED CONSTRAINT
+% Force to have exactly (m*(n+1))-n n+1s 
+constraint 
+    count(routes,n+1,(m*(n+1))-n);
 
 % ---------------------------------------------------------------------------------------------------------------------
 % OBJECTIVE FUNCTION
@@ -89,5 +95,5 @@ solve :: search_ann3  minimize max(dist_courier);
 
 
        
-output ["\(max(dist_courier))\n"];
-output [show(routes[i, j]) ++ if j == n then "\n" else " " endif | i in 1..m, j in 1..n];
+output ["Objective function value: \(dist_courier)\n"];
+output ["Routes value: \(routes)\n"];
