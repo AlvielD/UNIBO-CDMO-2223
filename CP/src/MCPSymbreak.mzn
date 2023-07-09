@@ -92,7 +92,7 @@ ann: search_ann6 = int_search(routes, dom_w_deg, indomain_random);
  
 
 
-solve :: search_ann6  minimize max(dist_courier);
+solve :: search_ann3  minimize max(dist_courier);
 
 
        
