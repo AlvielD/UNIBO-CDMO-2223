@@ -96,5 +96,5 @@ solve :: search_ann3  minimize max(dist_courier);
 
 
        
-output ["Objective function value: \(dist_courier)\n"];
-output ["Routes value: \(routes)\n"];
+output ["\(max(dist_courier))\n"];
+output ["\(routes)\n"];

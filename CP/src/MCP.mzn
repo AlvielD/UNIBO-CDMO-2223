@@ -82,5 +82,5 @@ solve :: search_ann3  minimize max(dist_courier);
 
 
        
-output ["Objective function value: \(dist_courier)\n"];
-output ["Routes value: \(routes)\n"];
+output ["\(max(dist_courier))\n"];
+output [show(routes[i, j]) ++ if j == n then "\n" else " " endif | i in 1..m, j in 1..n];
