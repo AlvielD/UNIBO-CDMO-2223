@@ -2,19 +2,27 @@
     "MCP": {
         "time": 0,
         "optimal": true,
-        "obj": 12,
+        "obj": 252.0,
         "sol": [
             [
-                5,
-                4,
                 2
             ],
             [
                 3,
-                7
+                1
+            ]
+        ]
+    },
+    "MCPSymbreak": {
+        "time": 0,
+        "optimal": true,
+        "obj": 252.0,
+        "sol": [
+            [
+                2
             ],
             [
-                6,
+                3,
                 1
             ]
         ]
@@ -22,19 +30,13 @@
     "MCPSymbreakImp": {
         "time": 0,
         "optimal": true,
-        "obj": 12,
+        "obj": 252.0,
         "sol": [
             [
-                5,
-                4,
                 2
             ],
             [
-                7,
-                3
-            ],
-            [
-                6,
+                3,
                 1
             ]
         ]

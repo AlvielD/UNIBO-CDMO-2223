@@ -1,6 +1,6 @@
 from z3 import *
 from utils import *
-import time
+from time import time
 
 def build_params(parameters, solver):
     
@@ -37,8 +37,11 @@ def solve_model(solver, routes, maximum, parameters, model_name):
 
     solver.minimize(maximum)
 
-    s_time = time.time()
-    if solver.check() == sat:
+    print("Checking satisfiability...")
+    s_time = time()
+    result = solver.check()
+    if result == sat:
+        print("Solving...")
         model = solver.model()
         length = model.evaluate(maximum)
         
@@ -49,9 +52,12 @@ def solve_model(solver, routes, maximum, parameters, model_name):
 
         obj_sol = length.as_long()
         solution = routes_sol
+    elif result == unknown:
+        print("N/A")
     else:
-        print("no sat")
-    e_time = time.time()
+        print("Unsat")
+
+    e_time = time()
 
     time_sol = math.floor(e_time-s_time)
     if time_sol < 300: optimal_sol = True
@@ -94,21 +100,26 @@ def build_model(parameters, model_name=None):
 
     for i in range(m):
         
-        # The courier must finish at the origin point
-        solver.add(routes[i][n] == n+1)
+        if model_name == "MCP":
+            # The courier must finish at the origin point
+            solver.add(routes[i][n] == n+1)
+        else:
+            for j in range(n-m+1, n+1):
+                solver.add(routes[i][j] == n+1)
+
         
         # Constraint to force that the total size of items assigned to each courier cannot exceed their maximum load size and constraint to force that the total size of items assigned to each courier is at least the load of the min value of item sizes
-        sums = Sum([If(routes[i][j] != n+1, s[routes[i][j] -1], 0) for j in range(n+1)])
-        solver.add(And(sums <= l[i], sums>=z3_min(s,n)))
+        sums = Sum([If(routes[i][j] < n+1, s[routes[i][j] -1], 0) for j in range(n+1)])
+        solver.add(sums <= l[i])
 
         #Constraint to force all the numbers after the first n+1 to be also n+1
         for j in range(n):
             solver.add(If(routes[i][j] == n+1, routes[i][j+1] == n+1, True))
         
-        if model_name in ["MCPSymbreak","MCPSymbreakImp"]:
+        if model_name == "MCPSymbreakImp":
             # SYMMETRY BREAKING
             #Constraint to force the first value of each row of the matrix to be different from n+1
-            solver.add(routes[i][0] != n+1)
+            solver.add(routes[i][0] < n+1)
             
 
     if model_name == "MCPSymbreakImp":

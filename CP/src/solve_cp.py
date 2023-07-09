@@ -1,9 +1,10 @@
 import os
 import json
 import asyncio
-import datetime
+from datetime import timedelta
 from tqdm import tqdm
 from minizinc import Instance, Model, Solver
+from minizinc.result import Status
 from minizinc.dzn import parse_dzn
 from pathlib import Path
 import math
@@ -76,7 +77,7 @@ async def solve_instances(models, solvers, data_files, output_folder):
                 instance.add_file(f"CP/data/{data_file}")   # Add the data to the instance
 
                 # Create a task for the solving of each instance
-                task = asyncio.create_task(instance.solve_async(timeout=timedelta(minutes=5)))
+                task = asyncio.create_task(instance.solve_asynchronised(instance, timedelta(minutes=5)))
                 task.solver = solver_name
                 task.model = model_name
                 task.instance = data_file
@@ -99,6 +100,12 @@ async def solve_instances(models, solvers, data_files, output_folder):
             json.dump(solution, file, indent=4)
     
     return data
+
+async def solve_asynchronised(instance, timeout):
+    async for sol in instance.solutions(timeout):
+        if sol.solution is None: continue
+        if sol.status == Status.OPTIMAL_SOLUTION:
+            return sol
 
 
 def gather_results(tasks):

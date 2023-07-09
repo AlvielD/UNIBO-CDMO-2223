@@ -1,8 +1,9 @@
-from z3 import *
-from utils import *
-from models import *
 import json
-from tqdm import tqdm
+
+def write_results(results, output_file):
+    # Write the results
+    with open(output_file, 'w') as file:
+        json.dump(results, file, indent=4)
 
 def parse_file(file):
     """Parse a .dat file and create the z3 variables containing the parameters of the problem
@@ -37,33 +38,3 @@ def parse_file(file):
         D = [list(map(int, line.split())) for line in lines[4:]]  # Distance matrix
 
     return m, n, l, s, D
-
-
-if __name__ == "__main__":
-
-    models_list = [
-        "MCP",
-        "MCPSymbreakImp"
-    ]
-
-    data_folder = 'test_data/'
-    data_files = os.listdir(data_folder)
-
-    for data_file, i in zip(data_files, tqdm(range(len(data_files)))):
-
-        # READ PARAMETERS
-        parameters = parse_file(f"{data_folder}/{data_file}")
-        m, n, _, _, _ = parameters
-
-        data = {}
-        for model_name in models_list:
-
-            # BUILD THE MODEL
-            solver, routes, maximum = build_model(parameters, model_name)
-
-            # SOLVE THE MODEL
-            results = solve_model(solver, routes, maximum, parameters, model_name)
-            update_dict(data, model_name, results.get(model_name))
-
-        # WRITE THE RESULTS
-        write_results(data, f"res/SMT/{data_file[4:6]}.json")
