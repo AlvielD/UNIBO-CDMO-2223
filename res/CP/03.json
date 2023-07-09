@@ -1,6 +1,82 @@
 {
-  "routes" : [[3, 6, 5, 8, 8, 8, 8, 8], [2, 4, 8, 8, 8, 8, 8, 8], [1, 7, 8, 8, 8, 8, 8, 8]]
+    "MCP_gecode": {
+        "time": 0,
+        "optimal": true,
+        "obj": 12,
+        "sol": [
+            [
+                3,
+                6,
+                5
+            ],
+            [
+                2,
+                4
+            ],
+            [
+                1,
+                7
+            ]
+        ]
+    },
+    "MCPSymbreakImp_gecode": {
+        "time": 0,
+        "optimal": true,
+        "obj": 12,
+        "sol": [
+            [
+                3,
+                6,
+                5
+            ],
+            [
+                2,
+                4
+            ],
+            [
+                1,
+                7
+            ]
+        ]
+    },
+    "MCP_chuffed": {
+        "time": 0,
+        "optimal": true,
+        "obj": 12,
+        "sol": [
+            [
+                3,
+                6,
+                5
+            ],
+            [
+                2,
+                4
+            ],
+            [
+                1,
+                7
+            ]
+        ]
+    },
+    "MCPSymbreakImp_chuffed": {
+        "time": 0,
+        "optimal": true,
+        "obj": 12,
+        "sol": [
+            [
+                3,
+                6,
+                5
+            ],
+            [
+                2,
+                4
+            ],
+            [
+                1,
+                7
+            ]
+        ]
+    }
 }
-----------
-==========
-% [X_INTRODUCED_87_ > 11]

@@ -2,26 +2,30 @@ from pulp import *
 from models import *
 from utils import *
 from pulp.apis import *
+from datetime import timedelta
+from tqdm import tqdm
+
+# CONSTANTS
+DEFAULT_TIMEOUT = timedelta(seconds=300)
+DATA_FOLDER = 'test_data/'
+RES_FOLDER = 'res/MIP/'
 
 if __name__ == "__main__":
     
     models_list = [
         "MCP",
-        "MCPSymbreak",
         "MCPSymbreakImp"
     ]
 
-    data_folder = "test_data/"
-    data_files = os.listdir(data_folder)
+    data_files = os.listdir(DATA_FOLDER)
 
-    for data_file in data_files:
+    for data_file, i in zip(data_files, tqdm(range(len(data_files)))):
 
         # READ PARAMETERS
-        parameters = parse_file(f"data/{data_file}")
-        m, n, _, _, _ = parameters
+        parameters = parse_file(f"{DATA_FOLDER}{data_file}")
+        m,n,_,_,_ = parameters
 
         data = {}
-
         for model_name in models_list:
 
             # BUILD MODEL

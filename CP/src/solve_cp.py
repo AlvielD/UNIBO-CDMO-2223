@@ -1,57 +1,44 @@
 import os
+import math
+import json
+import asyncio
 import subprocess
 from time import time
-import re
-import math
 from datetime import timedelta
+from tqdm import tqdm
 
-DEFAULT_TIMEOUT = timedelta(seconds=300)
+from utils import *
 
-def parse_file(file):
-    """Parse a .dat file and create the z3 variables containing the parameters of the problem
+
+# CONSTANTS
+DEFAULT_TIMEOUT = 300000
+DZN_FOLDER = 'CP/test_data/'
+DATA_FOLDER = 'data/'
+RES_FOLDER = 'res/CP/'
+
+
+async def solve_instance(model, solver, data_file):
+    """Solves an instance using the model and solver specified
 
     Args:
-        file (string): path to the file containing the instance data
-        solver (z3.Z3PPObject): solver for the model
+        model (string): name of the model to be used
+        solver (string): name of the solver to be used
+        data_file (string): name of the file to be used
 
     Returns:
-        int: number of couriers
-        int: number of items
-        z3.Array(IntSort, IntSort): load size for each courier
-        z3.Array(IntSort, IntSort): size of each item
-        z3.Array(IntSort, ArraySort(IntSort, IntSort)): distances matrix
+        dict: dictionary containing the results
     """
 
-    # Read the file and initialize the variables
-    with open(file, "r") as file:
-        lines = file.readlines()
-
-        # Parse the values from the file
-        m = int(lines[0].strip())  # Number of couriers
-        n = int(lines[1].strip())  # Number of items
-
-        # Maximum load for each courier
-        l = list(map(int, lines[2].split()))  
-
-        # Size of each item
-        s = list(map(int, lines[3].split()))
-
-        # Distance matrix
-        D = [list(map(int, line.split())) for line in lines[4:]]  # Distance matrix
-
-    return m, n, l, s, D
-
-def solve_instance(model, solver, data_file):
-
-    # TODO: Set up the routes for data folders
-    out_file = f"res/CP/{data_file[4:6]}.json"
     model_path = f"CP/src/{model}.mzn"
-    data_file_path = f"CP/test_data/{data_file}"
+    data_file_path = f"{DZN_FOLDER}{data_file}"
 
-    cmd = f"minizinc --solver {solver} -t {DEFAULT_TIMEOUT} {model_path} {data_file_path}"
-    s_time = time()
-    output = subprocess.check_output(cmd.split()).decode()
-    e_time = time()
+    # Command to execute minizinc
+    cmd = f"minizinc --solver {solver} -t 30000 {model_path} {data_file_path}"
+
+    s_time = time()                                         # Measure starting time
+    output = subprocess.check_output(cmd.split()).decode()  # Solve
+    e_time = time()                                         # Measure ending time
+
     time_sol = math.floor(e_time-s_time)
 
     obj_sol, solution = parse_solution(output)
@@ -66,17 +53,48 @@ def solve_instance(model, solver, data_file):
         "sol": solution
     }
 
-    print(result)
+    return result
+
+async def solve_instances(models_list, solvers_list, data_file):
+
+    tasks = set()
+
+    for solver_name in solvers_list:
+        for model_name in models_list:
+            task = asyncio.create_task(
+                solve_instance(model_name, solver_name, data_file)
+            )
+            tasks.add(task)
+            task.solver = solver_name
+            task.model = model_name
+    
+    done,_ = await asyncio.wait(tasks, return_when="ALL_COMPLETED")
+    
+    data = {}
+    for task in done:
+        result = task.result()
+        data.update({f"{task.model}_{task.solver}": result})
+
+    return data
     
 
 def parse_solution(output):
+    """Parse the solution string output by minizinc
 
-    m,n,_,_,_ = parse_file(f"data/{data_file[:6]}.dat")
+    Args:
+        output (string): minizinc's output
+
+    Returns:
+        int: value of the objective function
+        list: list containing the route for each courier
+    """
+
+    m,n,_,_,_ = parse_file(f"{DATA_FOLDER}{data_file[:6]}.dat")
 
     output = output.split("\n")
 
     # Parse objective function value
-    obj_sol = output[0].replace("\r", "")
+    obj_sol = int(output[0].replace("\r", ""))
 
     # Parse the decision variables
     solution = []
@@ -88,20 +106,37 @@ def parse_solution(output):
 
 if __name__ == "__main__":
 
+    # List of models to be used
     models_list = [
         "MCP",
         "MCPSymbreakImp"
     ]
 
+    # List of solvers to be used
     solvers_list = [
         "gecode",
         "chuffed"
     ]
 
-    data_folder = 'CP/test_data/'
-    data_files = os.listdir(data_folder)
+    dict_order = [f"{model}_{solver}" for solver in solvers_list for model in models_list]
 
-    for data_file in data_files:
+    data_files = os.listdir(DZN_FOLDER)
+
+    # Solving loop
+    for data_file, i in zip(data_files, tqdm(range(len(data_files)))):
+        """data = {}
         for solver_name in solvers_list:
             for model_name in models_list:
-                solve_instance(model_name, solver_name, data_file)
+                result = solve_instance(model_name, solver_name, data_file)
+                data.update({f"{model_name}_{solver_name}": result})
+        
+        # Write the results
+        with open(f"{RES_FOLDER}{data_file[4:6]}.json", 'w') as file:
+            json.dump(data, file, indent=4)
+        """
+        data = asyncio.run(solve_instances(models_list, solvers_list, data_file))
+        data = sort_dict(data, dict_order)
+
+        # Write the results
+        with open(f"{RES_FOLDER}{data_file[4:6]}.json", 'w') as file:
+            json.dump(data, file, indent=4)
