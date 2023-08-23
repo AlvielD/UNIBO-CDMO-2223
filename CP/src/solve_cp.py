@@ -158,13 +158,13 @@ if __name__ == '__main__':
 
     # Define the options for our problem
     models_list = [
-        'MCP',
-        #'MCPSymbreakImp'
+        #'MCP',
+        'MCPSymbreakImp'
     ]
 
     solvers_list = [
-        #'gecode',
-        'chuffed'
+        'gecode',
+        #'chuffed'
     ]
 
     data_folder = 'CP/test_data/'
